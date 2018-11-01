@@ -2,26 +2,30 @@ import os
 import configparser
 import subprocess
 import psutil
+import shutil
 
 # file paths to config files
 cfgFile = "Config.cfg"
 
 
 # Reads config file
-def NewParser():
-    parser = configparser.ConfigParser()
-    parser.read(cfgFile)
+parser = configparser.ConfigParser()
+parser.read(cfgFile)
 
 # save to variable
-    global arma_ser_pid
-    global bec_pid
-    global hc_pid
-    global workshop_dir
-    arma_ser_pid = parser.getint('PIDs', "Arma3")
-    bec_pid = parser.getint("PIDs", 'BEC')
-    hc_pid = parser.getint('PIDs', 'HC')
-    workshop_dir = parser.get('Workshop', 'Dir')
-    print(arma_ser_pid, bec_pid, hc_pid, workshop_dir)
+global arma_ser_pid
+global bec_pid
+global hc_pid
+global workshop_dir
+global readme_dir
+global server_dir
+arma_ser_pid = parser.getint('PIDs', "Arma3")
+bec_pid = parser.getint("PIDs", 'BEC')
+hc_pid = parser.getint('PIDs', 'HC')
+workshop_dir = parser.get('Workshop', 'Dir')
+readme_dir = parser.get('Sync files path', 'Readme Path')
+
+server_dir = parser.get('Server location', 'Server root')
 
 
 # TODO:Testing
@@ -65,7 +69,7 @@ def Steam_check:
         print('')
 
 # TODO:copy none steam files for use on server
-def CustomMods_check:
+def CustomMods_check():
     for folderName, subfolders, filenames in os.walk(workshop_dir):
         print(folderName)
 
@@ -77,13 +81,16 @@ def CustomMods_check:
 
         print('')
 
-# TODO: copy arma3 readme file from centrilised location
-
+# TODO: copy arma3 readme file from centralised location
+dest_dir = server_dir + 'readme.txt'
+shutil.copyfile(readme_dir, dest_dir)
 
 # sync keys folder
-
+dest_dir = server_dir
+shutil.copy(_dir, dest_dir)
 # sync mpmissions
-
+dest_dir = server_dir
+shutil.copy(mpmissions_dir, dest_dir)
 # sync beserver.cfg
 
 # archive server logs
