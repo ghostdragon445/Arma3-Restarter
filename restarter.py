@@ -4,60 +4,66 @@ import subprocess
 import psutil
 import shutil
 
-# file paths to config files
+# Create variables
 cfgFile = "Config.cfg"
 
 
 # Reads config file
-parser = configparser.ConfigParser()
-parser.read(cfgFile)
+class ParseConf:
+    parser = configparser.ConfigParser()
+    parser.read(cfgFile)
+    # save to variable
+    arma_ser_pid = parser.getint('PIDs', "Arma3")
+    bec_pid = parser.getint("PIDs", 'BEC')
+    hc_pid = parser.getint('PIDs', 'HC')
+    workshop_dir = parser.get('Workshop', 'Path')
+    custom_dir = parser.get('Sync files path', 'Custom path')
+    readme_dir = parser.get('Sync files path', 'Readme Path')
+    server_dir = parser.get('Server location', 'Server Path')
 
-# save to variable
-global arma_ser_pid
-global bec_pid
-global hc_pid
-global workshop_dir
-global readme_dir
-global server_dir
-arma_ser_pid = parser.getint('PIDs', "Arma3")
-bec_pid = parser.getint("PIDs", 'BEC')
-hc_pid = parser.getint('PIDs', 'HC')
-workshop_dir = parser.get('Workshop', 'Dir')
-readme_dir = parser.get('Sync files path', 'Readme Path')
-
-server_dir = parser.get('Server location', 'Server root')
 
 
 # TODO:Testing
 # Check if server is running
-print('Checking if server already exists...')
-if psutil.pid_exists(arma_ser_pid):
-    print("closing existing server...")
-    os.popen('TASKKILL /PID ' + str(arma_ser_pid) + ' /F')
-else:
+
+class ServerCheck:
+    print('Checking if server already exists...')
+    if psutil.pid_exists(ParseConf.arma_ser_pid):
+        print("closing existing server...")
+        os.popen('TASKKILL /PID ' + str(ParseConf.arma_ser_pid) + ' /F')
+    else:
+        StartSequence()
+
 
 
 
 # TODO:Testing
 # Check if BEC is running
-print('Checking if BEC already exists...')
-if psutil.pid_exists(bec_pid):
-    print("closing existing BEC instance...")
-    os.popen('TASKKILL /PID ' + str(bec_pid) + ' /F')
-else:
+class BecCheck:
+    print('Checking if BEC already exists...')
+    if psutil.pid_exists(ParseConf.bec_pid):
+        print("closing existing BEC instance...")
+        os.popen('TASKKILL /PID ' + str(ParseConf.bec_pid) + ' /F')
+        ServerCheck
+    else:
+        ServerCheck
 
 
 # TODO:Testing
 # Check if headless client is running
-print('Checking if Headless client already exists...')
-if psutil.pid_exists(hc_pid):
-    print("closing existing Headless client...")
-    os.popen('TASKKILL /PID ' + str(hc_pid) + ' /F')
-else:
+class HeadlessCheck:
+    print('Checking if Headless client already exists...')
+    if psutil.pid_exists(ParseConf.hc_pid):
+        print("closing existing Headless client...")
+        os.popen('TASKKILL /PID ' + str(ParseConf.hc_pid) + ' /F')
+        BecCheck
+    else:
+        BecCheck
+
 
 # TODO:code to check for steam mod updates and copy files needed
-def Steam_check:
-    for folderName, subfolders, filenames in os.walk(workshop_dir):
+class SteamCheck:
+    for folderName, subfolders, filenames in os.walk(ParseConf.workshop_dir):
         print(folderName)
 
         for subfolder in subfolder:
@@ -67,10 +73,11 @@ def Steam_check:
             print(filename)
 
         print('')
+
 
 # TODO:copy none steam files for use on server
-def CustomMods_check():
-    for folderName, subfolders, filenames in os.walk(workshop_dir):
+class CustomModsCheck:
+    for folderName, subfolders, filenames in os.walk(ParseConf.custom_dir):
         print(folderName)
 
         for subfolder in subfolder:
@@ -81,24 +88,35 @@ def CustomMods_check():
 
         print('')
 
+
 # TODO: copy arma3 readme file from centralised location
-dest_dir = server_dir + 'readme.txt'
-shutil.copyfile(readme_dir, dest_dir)
+class CopyReadme:
+    dest_dir = ParseConf.server_dir + 'readme.txt'
+    shutil.copyfile(ParseConf.readme_dir, dest_dir)
+
 
 # sync keys folder
-dest_dir = server_dir
-shutil.copy(_dir, dest_dir)
+class CopyKeys:
+    dest_dir = ParseConf.server_dir
+    shutil.copy(ParseConf.keys_dir, dest_dir)
+
+
 # sync mpmissions
-dest_dir = server_dir
-shutil.copy(mpmissions_dir, dest_dir)
+class CopyMissions:
+    dest_dir = ParseConf.server_dir
+    shutil.copy(ParseConf.mpmissions_dir, dest_dir)
+
+
 # sync beserver.cfg
-
+class CopyBeServer:
+    dest_dir = ParseConf.server_dir  # Edit to BEserver.cfg location
+    shutil.copy(ParseConf.mpmissions_dir, dest_dir)
 # archive server logs
-
+# investigate usage of zipfile
 
 # archive BEC logs
 
-# Back up options
+# Back up optionsz
 
 # TODO: Steam check for server update
 
