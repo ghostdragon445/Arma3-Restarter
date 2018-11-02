@@ -3,7 +3,7 @@ import configparser
 import subprocess
 import psutil
 import shutil
-
+import zipfile
 # Create variables
 cfgFile = "Config.cfg"
 
@@ -113,6 +113,10 @@ class CopyBeServer:
     shutil.copy(ParseConf.mpmissions_dir, dest_dir)
 # archive server logs
 # investigate usage of zipfile
+class ZipLog:
+    if ParseConf.zip_log_en = True:
+
+
 
 # archive BEC logs
 
